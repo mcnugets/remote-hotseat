@@ -19,22 +19,31 @@ class cli:
             click.echo(f"your path: {my_load}")
 
     def set_p2p(self):
+        with open("./saved_path.pickle", "rb") as f:
+            my_load = pickle.load(f)
+            try:
 
-        self.node.start()
-        try: 
-            with open("./saved_path.pickle", "rb") as f:
-                my_load = pickle.load(f)
-                try:
+                self.node.connect_to(host=my_load["ip"])
+                print("Connection succeeded")
 
-                    self.node.connect_to(host=my_load["ip"])
-                    click.echo("Attempting to connect")
-                    data = "waddup brotha"
-                    self.node.send_message(data)
+            except Exception as e:
+                click.echo(f"Something went wrong: {e}")
 
-                    self.node.on_message(data, self.node.id,True)
-                    click.echo("Connection succeeded")
+    def send_message(self, msg):
+        try:
 
-                except Exception as e:
-                    click.echo(f"Something went wrong: {e}")
-        except Exception as err:
-                click.echo(f"Failed fo perform: {err}")
+            self.node.send_message(msg, receiver=None)
+        except Exception as e:
+            print(e)
+
+    def start(self):
+        try:
+            self.node.start()
+        except Exception as e:
+            print(e)
+
+    def stop(self):
+        try:
+            self.node.stop()
+        except Exception as e:
+            print(e)
