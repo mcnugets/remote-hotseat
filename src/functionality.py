@@ -16,7 +16,7 @@ class cli:
     def load_path(self):
         with open("./saved_path.pickle", "rb") as f:
             my_load = pickle.load(f)
-            click.echo(f"your path: {my_load}")
+            print(f"your path: {my_load}")
 
     def connect(self):
         with open("./saved_path.pickle", "rb") as f:

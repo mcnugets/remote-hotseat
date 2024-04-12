@@ -11,10 +11,10 @@ if __name__ == "__main__":
     try:
         node = local_node()
         cmds = cli(node)
-        
+
         while True:
-            
-            cmd = input("Please input your commad: ")
+
+            cmd = input("hotseat>")
 
             if cmd == "start":
                 cmds.start()
@@ -25,6 +25,12 @@ if __name__ == "__main__":
                 cmds.send_message(msg)
             if cmd == "set":
                 cmds.set_configs()
+            if cmd == "load":
+                cmds.load_path()
+            if cmd == "peers":
+                print(node.id)
+                print(node.ip)
+                print(node.node_connected)
             if cmd == "exit":
                 cmds.stop()
                 break
