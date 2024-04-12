@@ -18,7 +18,7 @@ class cli:
             my_load = pickle.load(f)
             click.echo(f"your path: {my_load}")
 
-    def set_p2p(self):
+    def connect(self):
         with open("./saved_path.pickle", "rb") as f:
             my_load = pickle.load(f)
             try:
@@ -32,7 +32,10 @@ class cli:
     def send_message(self, msg):
         try:
 
-            self.node.send_message(msg, receiver=None)
+            self.node.send_message(msg, self.node.id)
+            print('message has been sent')
+            print('-------------')
+            
         except Exception as e:
             print(e)
 
@@ -47,3 +50,5 @@ class cli:
             self.node.stop()
         except Exception as e:
             print(e)
+
+    

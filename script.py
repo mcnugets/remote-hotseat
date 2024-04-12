@@ -3,13 +3,30 @@ import asyncio
 import socket
 import threading
 import click
-from pythonp2p import file_transfer
-from pythonp2p.node import *
-
+from src.p2p import local_node
 from src.functionality import cli
 
 
 if __name__ == "__main__":
-    node = Node("192.168.2.114", PORT, FILE_PORT)
-    cmds = cli(node)
-   
+    try:
+        node = local_node()
+        cmds = cli(node)
+        
+        while True:
+            
+            cmd = input("Please input your commad: ")
+
+            if cmd == "start":
+                cmds.start()
+            if cmd == "connect":
+                cmds.connect()
+            if cmd == "send":
+                msg = input("your message:")
+                cmds.send_message(msg)
+            if cmd == "set":
+                cmds.set_configs()
+            if cmd == "exit":
+                cmds.stop()
+                break
+    except Exception as e:
+        print(e)
