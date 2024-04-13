@@ -1,5 +1,6 @@
 import click
 import pickle
+import threading
 
 
 class cli:
@@ -25,16 +26,17 @@ class cli:
 
                 self.node.connect_to(host=my_load["ip"])
                 print("Connection succeeded")
-
+                print('\n')
             except Exception as e:
                 click.echo(f"Something went wrong: {e}")
 
     def send_message(self, msg):
         try:
 
-            self.node.send_message(msg, self.node.id)
+            self.node.send_message(msg)
             print('message has been sent')
             print('-------------')
+            print('\n')
             
         except Exception as e:
             print(e)
@@ -42,6 +44,7 @@ class cli:
     def start(self):
         try:
             self.node.start()
+            print('\n')
         except Exception as e:
             print(e)
 
