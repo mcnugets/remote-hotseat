@@ -16,8 +16,6 @@ class local_node(Node):
 
     def on_message(self, message, sender, private):
         try:
-            print(f"Received message: {message} from {sender} (private: {private})")
-
             return super().on_message(message, sender, private)
         except Exception as e:
             print(e)
