@@ -3,6 +3,7 @@ import pickle
 import threading
 import pandas as pd
 import os
+from tabulate import tabulate
 
 
 class cli:
@@ -23,11 +24,12 @@ class cli:
             dict = {}
 
         try:
-            with open(filename, "wb") as f:
+            with open(filename, "ab") as f:
                 if "me" not in dict:
                     me = input("Set your name please: ")
                     dict["me"] = me
                     pickle.dump(dict, f)
+                   
 
         except Exception as e:
             print(f"Oops something went wrong: {e}")
@@ -52,21 +54,20 @@ class cli:
 
             if "me" in my_load:
                 df1 = pd.DataFrame({"me", my_load["me"]})
-                df1.style.format(precision=3, thousands=".", decimal=",").format_index(
-                    str.upper, axis=1
-                )
+
+                print(tabulate(df1, headers=df1.columns[1:], tablefmt="grid"))
 
             if "ip" in my_load:
                 my_load_t = pd.DataFrame.from_dict(my_load["ip"]).T
                 df2 = pd.DataFrame.from_dict(my_load_t, columns=["users", "ips"])
-                df2.style.format(precision=3, thousands=".", decimal=",").format_index(
-                    str.upper, axis=1
-                )
+                # df2.style.format(precision=3, thousands=".", decimal=",").format_index(
+                #     str.upper, axis=1
+                # )
             if "path" in my_load:
                 df3 = pd.DataFrame.from_dict([my_load["path"]], columns=["Path"])
-                df3.style.format(precision=3, thousands=".", decimal=",").format_index(
-                    str.upper, axis=1
-                )
+                # df3.style.format(precision=3, thousands=".", decimal=",").format_index(
+                #     str.upper, axis=1
+                # )
 
     def connect(self, user):
         with open("./saved_path.pickle", "rb") as f:
