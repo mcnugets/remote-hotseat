@@ -22,31 +22,49 @@ class cli:
                 dict = {}
         else:
             dict = {}
-
         try:
-            with open(filename, "ab") as f:
-                if "me" not in dict:
+            if "me" not in dict:
+                with open(filename, "ab") as f:
                     me = input("Set your name please: ")
                     dict["me"] = me
                     pickle.dump(dict, f)
-                   
 
         except Exception as e:
             print(f"Oops something went wrong: {e}")
 
     def set_configs(self):
-        with open("./saved_path.pickle", "wb") as f:
+
+        filename = "./saved_path.pickle"
+
+        if os.path.exists(filename):
+            try:
+                with open(filename, "rb") as f:
+                    dict = pickle.load(f)
+            except EOFError:
+                dict = {}
+        else:
+            dict = {}
+        with open(filename, "wb") as f:
             save = input("Input your save file path:")
             print("--------")
-            n_peers = input("how many peers: ")
-            peers = {}
-            for i in range(n_peers):
-                user = input("user: ")
-                ip = input("ip: ")
-                peers[user] = ip
-
-            data = {"path": save, "ip": peers}
-            pickle.dump(data, f)
+            n_peers = int(input("how many peers: "))
+            if "ip" in dict:
+                peers = dict["ip"]
+            else:
+                peers = {}
+            try:
+                for _ in range(n_peers):
+                    user = input("user: ")
+                    ip = input("ip: ")
+                    if user in peers:
+                        print("user already exists, were gonna skip that one")
+                    else:
+                        peers[user] = ip
+                dict["path"] = save
+                dict["ip"] = peers
+                pickle.dump(dict, f)
+            except Exception as e:
+                print(f"the cause: {e}")
 
     def load_path(self):
         with open("./saved_path.pickle", "rb") as f:
@@ -58,16 +76,15 @@ class cli:
                 print(tabulate(df1, headers=df1.columns[1:], tablefmt="grid"))
 
             if "ip" in my_load:
-                my_load_t = pd.DataFrame.from_dict(my_load["ip"]).T
-                df2 = pd.DataFrame.from_dict(my_load_t, columns=["users", "ips"])
-                # df2.style.format(precision=3, thousands=".", decimal=",").format_index(
-                #     str.upper, axis=1
-                # )
+
+                tup_ips = [(key, value) for key, value in my_load["ip"].items()]
+                df2 = pd.DataFrame(tup_ips, columns=["users", "ips"])
+
+                print(tabulate(df2, headers=df2.columns, tablefmt="grid"))
+
             if "path" in my_load:
-                df3 = pd.DataFrame.from_dict([my_load["path"]], columns=["Path"])
-                # df3.style.format(precision=3, thousands=".", decimal=",").format_index(
-                #     str.upper, axis=1
-                # )
+                df3 = pd.DataFrame({"Path": [my_load["path"]]})
+                print(tabulate(df3, headers=df3.columns, tablefmt="grid"))
 
     def connect(self, user):
         with open("./saved_path.pickle", "rb") as f:
