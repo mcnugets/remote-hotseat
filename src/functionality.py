@@ -109,8 +109,8 @@ class cli:
                 if user in them_ips:
 
                     for a in self.node.nodes_connected:
-                        if them_ips[user] == a.ip:
-                            msg_from = f"{self.me}> {msg}"
+                        if them_ips[user] == a.host:
+                            msg_from = f"{my_load['me']}> {msg}"
                             self.node.send_message(msg_from, a.id)
                 else:
                     print("User not found: either doesnt exist or check your syntax")
@@ -121,6 +121,12 @@ class cli:
 
         except Exception as e:
             print(e)
+
+    def share_file(self):
+        with open("./saved_path.pickle", "rb") as f:
+            data = pickle.load(f)
+            self.node.setfiledir(data["path"])
+            filehash = self.node.addfile(f"{data['path']}/blank.txt")
 
     def start(self):
         try:

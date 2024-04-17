@@ -20,7 +20,6 @@ def main():
 
         
         cmds.set_me()
-
         print("--------------------------")
         print("WELCOME TO WHATEVER THIS IS")
         print("--------------------------")
