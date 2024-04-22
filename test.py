@@ -9,10 +9,15 @@ n = local_node()
 c = cli(n)
 c.start()
 
-n.setfiledir("D/vscode_projects/python based projects/remote_hotseat/blank.txt")
+n.setfiledir("D:/vscode_projects/python based projects")
 
-filehash = n.addfile("D/vscode_projects/python based projects/remote_hotseat/blank.txt")
-print(filehash)
+filehash = n.addfile("C:/Users/sulta/OneDrive/Desktop/sss.png")
+try:
+    n.requestFile(filehash)
+    print(filehash)
+except Exception as e:
+    print(e)
+
 n.stop()
 
 # with open("./saved_path.pickle", "rb") as f:

@@ -100,7 +100,7 @@ class cli:
             except Exception as e:
                 print(f"Something went wrong: {e}")
 
-    def send_message(self, user, msg):
+    def send(self, user, msg, type):
         try:
             with open("./saved_path.pickle", "rb") as f:
                 my_load = pickle.load(f)
@@ -110,8 +110,14 @@ class cli:
 
                     for a in self.node.nodes_connected:
                         if them_ips[user] == a.host:
-                            msg_from = f"{my_load['me']}> {msg}"
-                            self.node.send_message(msg_from, a.id)
+                            msg_from = f"{my_load['me']}>"
+                            if type == "message":
+
+                                self.node.send_message(f"{msg_from} {msg}", a.id)
+                            elif type == "file":
+                                filehash = self.share_file(f)
+                                self.node.send_message(f"{msg_from} {filehash}", a.id)
+
                 else:
                     print("User not found: either doesnt exist or check your syntax")
 
@@ -119,14 +125,19 @@ class cli:
                 print("-------------")
                 print("\n")
 
+        except FileNotFoundError:
+            print("No such file")
+        except pickle.UnpicklingError:
+            print("Unable unpickle")
         except Exception as e:
-            print(e)
+            print(f"An error occurred: {e}")
 
-    def share_file(self):
-        with open("./saved_path.pickle", "rb") as f:
-            data = pickle.load(f)
-            self.node.setfiledir(data["path"])
-            filehash = self.node.addfile(f"{data['path']}/blank.txt")
+    def share_file(self, f):
+        try:
+            self.node.setfiledir(f["path"])
+            return self.node.addfile(f"../blank.txt")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
 
     def start(self):
         try:
