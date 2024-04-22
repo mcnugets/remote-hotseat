@@ -18,7 +18,6 @@ def main():
 
         cmds = cli(node)
 
-        
         cmds.set_me()
         print("--------------------------")
         print("WELCOME TO WHATEVER THIS IS")
@@ -45,11 +44,10 @@ def main():
                     )
 
             if cmd[0] == "send":
-                if len(cmd) > 1:
-                    msg = input("your message:")
-                    cmds.send_message(user=cmd[1], msg=msg)
+                if len(cmd) == 3:
+                    cmds.send(user=cmd[2], type=cmd[1])
                 else:
-                    print("You forgot the name of the receiver")
+                    print("One of the command is missing. for guidance type: help")
 
             if cmd[0] == "set":
                 cmds.set_configs()

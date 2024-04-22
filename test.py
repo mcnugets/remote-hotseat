@@ -10,7 +10,6 @@ c = cli(n)
 c.start()
 
 n.setfiledir("D:/vscode_projects/python based projects")
-
 filehash = n.addfile("C:/Users/sulta/OneDrive/Desktop/sss.png")
 try:
     n.requestFile(filehash)

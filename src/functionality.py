@@ -100,8 +100,12 @@ class cli:
             except Exception as e:
                 print(f"Something went wrong: {e}")
 
-    def send(self, user, msg, type):
+    def send(self, user, type=""):
+        if len(self.node.nodes_connected) == 0:
+            print("Youre not connected. Connect first")
+            return
         try:
+
             with open("./saved_path.pickle", "rb") as f:
                 my_load = pickle.load(f)
                 them_ips = my_load["ip"]
@@ -109,14 +113,23 @@ class cli:
                 if user in them_ips:
 
                     for a in self.node.nodes_connected:
+
                         if them_ips[user] == a.host:
                             msg_from = f"{my_load['me']}>"
-                            if type == "message":
-
+                            if type == "msg":
+                                msg = input("Please input your message: ")
                                 self.node.send_message(f"{msg_from} {msg}", a.id)
+                                break
                             elif type == "file":
                                 filehash = self.share_file(f)
                                 self.node.send_message(f"{msg_from} {filehash}", a.id)
+
+                                break
+                            else:
+                                print(
+                                    "One of the commands do not exist: input help for guidance"
+                                )
+                                break
 
                 else:
                     print("User not found: either doesnt exist or check your syntax")
