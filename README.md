@@ -6,7 +6,7 @@ main tools the project uses: pythonp2p, click
 
 ## how to start
 just run the script like this: `python3 script.py` or `python script.py` 
-you can use `--help` to get to know the cli commands program gives you and act accordingly 
+you can use `help` to get to know the cli commands program gives you and act accordingly 
 
 
 ---
