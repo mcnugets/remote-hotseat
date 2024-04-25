@@ -109,21 +109,21 @@ class cli:
             with open("./saved_path.pickle", "rb") as f:
                 my_load = pickle.load(f)
                 them_ips = my_load["ip"]
-
                 if user in them_ips:
-
                     for a in self.node.nodes_connected:
 
                         if them_ips[user] == a.host:
-                            msg_from = f"{my_load['me']}>"
+                            data = {"me": my_load["me"], "type": type}
                             if type == "msg":
+
                                 msg = input("Please input your message: ")
-                                self.node.send_message(f"{msg_from} {msg}", a.id)
+                                data["msg"] = msg
+                                self.node.send_message(data, a.id)
                                 break
                             elif type == "file":
-                                filehash = self.share_file(f)
-                                self.node.send_message(f"{msg_from} {filehash}", a.id)
-
+                                filehash = self.share_file(my_load)
+                                data["filehash"] = filehash
+                                self.node.send_message(data, a.id)
                                 break
                             else:
                                 print(
@@ -147,8 +147,8 @@ class cli:
 
     def share_file(self, f):
         try:
-            self.node.setfiledir(f["path"])
-            return self.node.addfile(f"../blank.txt")
+            self.node.setfiledir(f"{f['path']}")
+            return self.node.addfile(f"C:/Users/sulta/OneDrive/Desktop/sss.png")
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
 
