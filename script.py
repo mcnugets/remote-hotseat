@@ -44,14 +44,15 @@ def main():
                     )
 
             if cmd[0] == "send":
-                if len(cmd) == 3: 
+                if len(cmd) == 3:
                     cmds.send(user=cmd[2], type=cmd[1])
                 else:
                     print("One of the command is missing. for guidance type: help")
 
             if cmd[0] == "set":
                 cmds.set_configs()
-
+            if cmd[0] == "setpath":
+                cmds.set_path()
             if cmd[0] == "peers":
                 print("\n")
                 for a in node.nodes_connected:
