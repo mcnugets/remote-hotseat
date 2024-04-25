@@ -13,21 +13,20 @@ class local_node(Node):
 
     def start(self) -> None:
         return super().start()
-    
+
     def requestFile(self, fhash):
         return super().requestFile(fhash)
-    
+
     def on_message(self, message, sender, private):
         try:
             type_ = message["type"]
             if type_ == "msg":
-                msg = f"{message["me"]}> {message["msg"]}"
+                msg = f"{message['me']}> {message['msg']}"
                 return super().on_message(msg, sender, private)
             if type_ == "file":
-                msg = f"{message["me"]}> {message["filehash"]}"
+                msg = f"{message['me']}> {message['filehash']}"
                 self.requestFile(message["filehash"])
             return super().on_message(msg, sender, private)
-            
 
         except Exception as e:
             print(e)
