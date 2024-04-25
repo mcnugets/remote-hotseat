@@ -11,4 +11,5 @@ you can use `--help` to get to know the cli commands program gives you and act a
 
 ---
 _Note: I may continue the project to develop it further but that is unlikely_ 
+
 _Note: since this program somewhat saves data I might incorporate some database management_
