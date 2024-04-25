@@ -10,6 +10,7 @@ class cli:
     def __init__(self, node) -> None:
         self.node = node
 
+    # Sets your name
     def set_me(self):
 
         filename = "./saved_path.pickle"
@@ -32,6 +33,7 @@ class cli:
         except Exception as e:
             print(f"Oops something went wrong: {e}")
 
+    # set the main configs for the program to use
     def set_configs(self):
 
         filename = "./saved_path.pickle"
@@ -66,6 +68,7 @@ class cli:
             except Exception as e:
                 print(f"the cause: {e}")
 
+    # Display the content of the data file
     def load_path(self):
         with open("./saved_path.pickle", "rb") as f:
             my_load = pickle.load(f)
@@ -86,6 +89,7 @@ class cli:
                 df3 = pd.DataFrame({"Path": [my_load["path"]]})
                 print(tabulate(df3, headers=df3.columns, tablefmt="grid"))
 
+    # Perform connection to the certain user/peer
     def connect(self, user):
         with open("./saved_path.pickle", "rb") as f:
             my_load = pickle.load(f)
@@ -100,6 +104,7 @@ class cli:
             except Exception as e:
                 print(f"Something went wrong: {e}")
 
+    # Sends content to the other peer
     def send(self, user, type=""):
         if len(self.node.nodes_connected) == 0:
             print("Youre not connected. Connect first")
@@ -145,10 +150,25 @@ class cli:
         except Exception as e:
             print(f"An error occurred: {e}")
 
+    def set_path(self):
+        try:
+            with open("./saved_path.pickle", "rb") as f:
+                my_load = pickle.load(f)
+                self.node.setfiledir(f"{my_load['path']}")
+
+        except FileNotFoundError:
+            print("No such file")
+        except pickle.UnpicklingError:
+            print("Unable unpickle")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
     def share_file(self, f):
         try:
-            self.node.setfiledir(f"{f['path']}")
             return self.node.addfile(f"C:/Users/sulta/OneDrive/Desktop/sss.png")
+
+        except FileNotFoundError:
+            print("No such file")
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
 

@@ -44,7 +44,7 @@ def main():
                     )
 
             if cmd[0] == "send":
-                if len(cmd) == 3:
+                if len(cmd) == 3: 
                     cmds.send(user=cmd[2], type=cmd[1])
                 else:
                     print("One of the command is missing. for guidance type: help")
