@@ -6,11 +6,39 @@ import os
 from tabulate import tabulate
 
 
+# general purpose decorator
+# def my_decorator(func):
+#     def wrapper(*args, **kwargs):
+#         print("Before calling the function")
+#         result = func(*args, **kwargs)
+#         print("After calling the function")
+#         return result
+#     return wrapper
+# Sets your name
+
+
+def dec_openf(func):
+    def wrapper(*args, **kwargs):
+        try:
+            with open("./saved_path.pickle", "rb") as f:
+                data = pickle.load(f)
+                result = func(*args, data=data, **kwargs)
+                return result
+
+        except FileNotFoundError:
+            print("No such file")
+        except pickle.UnpicklingError:
+            print("Unable unpickle")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+    return wrapper
+
+
 class cli:
     def __init__(self, node) -> None:
         self.node = node
 
-    # Sets your name
     def set_me(self):
 
         filename = "./saved_path.pickle"
@@ -46,6 +74,7 @@ class cli:
                 dict = {}
         else:
             dict = {}
+
         with open(filename, "wb") as f:
             save = input("Input your save file path:")
             print("--------")
@@ -69,99 +98,80 @@ class cli:
                 print(f"the cause: {e}")
 
     # Display the content of the data file
-    def load_path(self):
-        with open("./saved_path.pickle", "rb") as f:
-            my_load = pickle.load(f)
+    @dec_openf
+    def load_path(self, data):
+        if "me" in data:
+            df1 = pd.DataFrame({"me", data["me"]})
 
-            if "me" in my_load:
-                df1 = pd.DataFrame({"me", my_load["me"]})
+            print(tabulate(df1, headers=df1.columns[1:], tablefmt="grid"))
 
-                print(tabulate(df1, headers=df1.columns[1:], tablefmt="grid"))
+        if "ip" in data:
 
-            if "ip" in my_load:
+            tup_ips = [(key, value) for key, value in data["ip"].items()]
+            df2 = pd.DataFrame(tup_ips, columns=["users", "ips"])
 
-                tup_ips = [(key, value) for key, value in my_load["ip"].items()]
-                df2 = pd.DataFrame(tup_ips, columns=["users", "ips"])
+            print(tabulate(df2, headers=df2.columns, tablefmt="grid"))
 
-                print(tabulate(df2, headers=df2.columns, tablefmt="grid"))
-
-            if "path" in my_load:
-                df3 = pd.DataFrame({"Path": [my_load["path"]]})
-                print(tabulate(df3, headers=df3.columns, tablefmt="grid"))
+        if "path" in data:
+            df3 = pd.DataFrame({"Path": [data["path"]]})
+            print(tabulate(df3, headers=df3.columns, tablefmt="grid"))
 
     # Perform connection to the certain user/peer
-    def connect(self, user):
-        with open("./saved_path.pickle", "rb") as f:
-            my_load = pickle.load(f)
-            try:
-                if user in my_load["ip"]:
-                    self.node.connect_to(host=my_load["ip"][user])
-                    print("Connection succeeded")
+    @dec_openf
+    def connect(self, user, data):
+        if user in data["ip"]:
+            self.node.connect_to(host=data["ip"][user])
+            print("Connection succeeded")
 
-                else:
-                    print("User not found: either doesnt exist or check your syntax")
-                print("\n")
-            except Exception as e:
-                print(f"Something went wrong: {e}")
+        else:
+            print("User not found: either doesnt exist or check your syntax")
+        print("\n")
 
     # Sends content to the other peer
     def send(self, user, type=""):
         if len(self.node.nodes_connected) == 0:
             print("Youre not connected. Connect first")
             return
-        try:
 
-            with open("./saved_path.pickle", "rb") as f:
-                my_load = pickle.load(f)
-                them_ips = my_load["ip"]
-                if user in them_ips:
-                    for a in self.node.nodes_connected:
+        @dec_openf
+        def open_file(data):
+            them_ips = data["ip"]
+            if user in them_ips:
+                for a in self.node.nodes_connected:
 
-                        if them_ips[user] == a.host:
-                            data = {"me": my_load["me"], "type": type}
-                            if type == "msg":
+                    if them_ips[user] == a.host:
+                        data = {"me": data["me"], "type": type}
+                        if type == "msg":
 
-                                msg = input("Please input your message: ")
-                                data["msg"] = msg
-                                self.node.send_message(data, a.id)
-                                break
-                            elif type == "file":
-                                filehash = self.share_file(my_load)
-                                data["filehash"] = filehash
-                                self.node.send_message(data, a.id)
-                                break
-                            else:
-                                print(
-                                    "One of the commands do not exist: input help for guidance"
-                                )
-                                break
+                            msg = input("Please input your message: ")
+                            data["msg"] = msg
+                            self.node.send_message(data, a.id)
+                            print("message has been sent")
+                            print("-------------")
+                            print("\n")
+                            break
+                        elif type == "file":
+                            filehash = self.share_file(data)
+                            data["filehash"] = filehash
+                            self.node.send_message(data, a.id)
+                            print("file has been sent")
+                            print("-------------")
+                            break
+                        else:
+                            print(
+                                "One of the commands do not exist: input help for guidance"
+                            )
+                            break
 
-                else:
-                    print("User not found: either doesnt exist or check your syntax")
+            else:
+                print("User not found: either doesnt exist or check your syntax")
 
-                print("message has been sent")
-                print("-------------")
-                print("\n")
+        open_file()
 
-        except FileNotFoundError:
-            print("No such file")
-        except pickle.UnpicklingError:
-            print("Unable unpickle")
-        except Exception as e:
-            print(f"An error occurred: {e}")
-
-    def set_path(self):
-        try:
-            with open("./saved_path.pickle", "rb") as f:
-                my_load = pickle.load(f)
-                self.node.setfiledir(f"{my_load['path']}")
-
-        except FileNotFoundError:
-            print("No such file")
-        except pickle.UnpicklingError:
-            print("Unable unpickle")
-        except Exception as e:
-            print(f"An error occurred: {e}")
+    @dec_openf
+    def set_path(self, data):
+        self.node.setfiledir(f"{data['path']}")
+        print("the directory was set!")
 
     def share_file(self, f):
         try:
