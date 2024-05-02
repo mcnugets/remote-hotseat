@@ -6,17 +6,6 @@ import os
 from tabulate import tabulate
 
 
-# general purpose decorator
-# def my_decorator(func):
-#     def wrapper(*args, **kwargs):
-#         print("Before calling the function")
-#         result = func(*args, **kwargs)
-#         print("After calling the function")
-#         return result
-#     return wrapper
-# Sets your name
-
-
 def dec_openf(func):
     def wrapper(*args, **kwargs):
         try:
@@ -106,7 +95,6 @@ class cli:
             print(tabulate(df1, headers=df1.columns[1:], tablefmt="grid"))
 
         if "ip" in data:
-
             tup_ips = [(key, value) for key, value in data["ip"].items()]
             df2 = pd.DataFrame(tup_ips, columns=["users", "ips"])
 
@@ -175,7 +163,7 @@ class cli:
 
     def share_file(self, f):
         try:
-            return self.node.addfile(f"C:/Users/sulta/OneDrive/Desktop/sss.png")
+            return self.node.addfile(f"C:/Users/sulta/Downloads/send.png")
 
         except FileNotFoundError:
             print("No such file")

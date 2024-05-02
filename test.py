@@ -9,10 +9,12 @@ n = local_node()
 c = cli(n)
 c.start()
 
-n.setfiledir("D:/vscode_projects/python based projects")
+n.setfiledir("D:/vscode_projects/python based projects/remote_hotseat")
 filehash = n.addfile("C:/Users/sulta/OneDrive/Desktop/sss.png")
 try:
+    print("we requested a file:")
     n.requestFile(filehash)
+
     print(filehash)
 except Exception as e:
     print(e)
