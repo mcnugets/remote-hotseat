@@ -2,7 +2,6 @@ import json
 import asyncio
 import socket
 import threading
-import click
 from src.p2p import local_node
 from src.functionality import cli
 import time

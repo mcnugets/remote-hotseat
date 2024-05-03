@@ -13,7 +13,7 @@ WORKDIR /work/app
 
 RUN python -m venv venv
 
-ENV PATH="work/app/venv/$PATH"
+ENV PATH="/work/app/venv//bin:$PATH"
 
 # Copy the source code into the container.
 COPY . .
