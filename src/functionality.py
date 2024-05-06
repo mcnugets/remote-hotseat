@@ -108,7 +108,7 @@ class cli:
     @dec_openf
     def connect(self, user, data):
         if user in data["ip"]:
-            self.node.connect_to(host=data["ip"][user])
+            self.node.connect_to_ports(host=data["ip"][user])
             print("Connection succeeded")
 
         else:

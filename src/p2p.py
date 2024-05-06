@@ -3,6 +3,8 @@ from pythonp2p import Node
 import click
 import threading
 
+from pythonp2p.node import FILE_PORT, PORT
+
 
 class local_node(Node):
     def __init__(self, host="", port=PORT, file_port=FILE_PORT):
@@ -31,8 +33,8 @@ class local_node(Node):
         except Exception as e:
             print(e)
 
-    def connect_to(self, host, port=PORT):
-        return super().connect_to(host, port)
+    def connect_to_ports(self, host, ports=[PORT, FILE_PORT]):
+        return super().connect_to_ports(host, ports)
 
     def stop(self):
         return super().stop()
